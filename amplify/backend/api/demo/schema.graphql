@@ -20,3 +20,9 @@ type Comment @model {
   post: Post @belongsTo
   content: String!
 }
+
+type Todo @model {
+  id: ID!
+  name: String!
+  description: String
+}

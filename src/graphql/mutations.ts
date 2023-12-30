@@ -227,3 +227,54 @@ export const deleteComment = /* GraphQL */ `mutation DeleteComment(
   APITypes.DeleteCommentMutationVariables,
   APITypes.DeleteCommentMutation
 >;
+export const createTodo = /* GraphQL */ `mutation CreateTodo(
+  $input: CreateTodoInput!
+  $condition: ModelTodoConditionInput
+) {
+  createTodo(input: $input, condition: $condition) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateTodoMutationVariables,
+  APITypes.CreateTodoMutation
+>;
+export const updateTodo = /* GraphQL */ `mutation UpdateTodo(
+  $input: UpdateTodoInput!
+  $condition: ModelTodoConditionInput
+) {
+  updateTodo(input: $input, condition: $condition) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateTodoMutationVariables,
+  APITypes.UpdateTodoMutation
+>;
+export const deleteTodo = /* GraphQL */ `mutation DeleteTodo(
+  $input: DeleteTodoInput!
+  $condition: ModelTodoConditionInput
+) {
+  deleteTodo(input: $input, condition: $condition) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteTodoMutationVariables,
+  APITypes.DeleteTodoMutation
+>;
