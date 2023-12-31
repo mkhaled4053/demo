@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { generateClient } from 'aws-amplify/api';
 
-import { createTodo, deleteTodo } from './graphql/mutations';
-import { listTodos } from './graphql/queries';
+import { createPost, createPostTags, createTag, createTodo, deleteTodo } from './graphql/mutations';
+import { getPost, getTodo, listComments, listPosts, listTodos } from './graphql/queries';
 import { type CreateTodoInput, type Todo } from './API';
 
 const initialState: CreateTodoInput = { name: '', description: '' };
@@ -15,6 +15,7 @@ const App = () => {
 
   useEffect(() => {
     fetchTodos();
+    fetchPosts()
   }, []);
 
   async function fetchTodos() {
@@ -23,9 +24,51 @@ const App = () => {
         query: listTodos,
       });
       const todos = todoData.data.listTodos.items;
+      console.log(todos);
       setTodos(todos);
     } catch (err) {
       console.log('error fetching todos');
+    }
+  }
+
+  async function fetchPosts() {
+    try {
+
+
+// create tag
+const tagResult = await client.graphql({
+  query: createTag,
+  variables: {
+    input: {
+      label: 'new Tag'
+    }
+  }
+});
+const tag = tagResult.data.createTag;
+
+// connect post and tag
+let con = await client.graphql({
+  query: createPostTags,
+  variables: {
+    input: {
+      postId: "d19b3000-9008-4b2e-8c4e-a0f01256bc41",
+      tagId: tag.id,
+    }
+  }
+});
+
+console.log(con);
+
+
+const listPostsResult = await client.graphql({ query: listPosts });
+const posts = listPostsResult.data.listPosts.items;
+
+console.log(posts);
+//@ts-ignore
+console.log(posts[0].tags);
+
+    } catch (err) {
+      console.log(err);
     }
   }
 

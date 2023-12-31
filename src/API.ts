@@ -73,27 +73,37 @@ export type Post = {
   __typename: "Post",
   id: string,
   title: string,
-  blog?: Blog | null,
-  comments?: ModelCommentConnection | null,
+  content?: string | null,
+  tags?: ModelPostTagsConnection | null,
   createdAt: string,
   updatedAt: string,
   blogPostsId?: string | null,
 };
 
-export type ModelCommentConnection = {
-  __typename: "ModelCommentConnection",
-  items:  Array<Comment | null >,
+export type ModelPostTagsConnection = {
+  __typename: "ModelPostTagsConnection",
+  items:  Array<PostTags | null >,
   nextToken?: string | null,
 };
 
-export type Comment = {
-  __typename: "Comment",
+export type PostTags = {
+  __typename: "PostTags",
   id: string,
-  post?: Post | null,
-  content: string,
+  postId: string,
+  tagId: string,
+  post: Post,
+  tag: Tag,
   createdAt: string,
   updatedAt: string,
-  postCommentsId?: string | null,
+};
+
+export type Tag = {
+  __typename: "Tag",
+  id: string,
+  label: string,
+  posts?: ModelPostTagsConnection | null,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type UpdateBlogInput = {
@@ -108,11 +118,13 @@ export type DeleteBlogInput = {
 export type CreatePostInput = {
   id?: string | null,
   title: string,
+  content?: string | null,
   blogPostsId?: string | null,
 };
 
 export type ModelPostConditionInput = {
   title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
   not?: ModelPostConditionInput | null,
@@ -138,6 +150,7 @@ export type ModelIDInput = {
 export type UpdatePostInput = {
   id: string,
   title?: string | null,
+  content?: string | null,
   blogPostsId?: string | null,
 };
 
@@ -145,10 +158,30 @@ export type DeletePostInput = {
   id: string,
 };
 
+export type CreateTagInput = {
+  id?: string | null,
+  label: string,
+};
+
+export type ModelTagConditionInput = {
+  label?: ModelStringInput | null,
+  and?: Array< ModelTagConditionInput | null > | null,
+  or?: Array< ModelTagConditionInput | null > | null,
+  not?: ModelTagConditionInput | null,
+};
+
+export type UpdateTagInput = {
+  id: string,
+  label?: string | null,
+};
+
+export type DeleteTagInput = {
+  id: string,
+};
+
 export type CreateCommentInput = {
   id?: string | null,
   content: string,
-  postCommentsId?: string | null,
 };
 
 export type ModelCommentConditionInput = {
@@ -156,13 +189,19 @@ export type ModelCommentConditionInput = {
   and?: Array< ModelCommentConditionInput | null > | null,
   or?: Array< ModelCommentConditionInput | null > | null,
   not?: ModelCommentConditionInput | null,
-  postCommentsId?: ModelIDInput | null,
+};
+
+export type Comment = {
+  __typename: "Comment",
+  id: string,
+  content: string,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type UpdateCommentInput = {
   id: string,
   content?: string | null,
-  postCommentsId?: string | null,
 };
 
 export type DeleteCommentInput = {
@@ -173,6 +212,7 @@ export type CreateTodoInput = {
   id?: string | null,
   name: string,
   description?: string | null,
+  todoCommentId?: string | null,
 };
 
 export type ModelTodoConditionInput = {
@@ -181,6 +221,7 @@ export type ModelTodoConditionInput = {
   and?: Array< ModelTodoConditionInput | null > | null,
   or?: Array< ModelTodoConditionInput | null > | null,
   not?: ModelTodoConditionInput | null,
+  todoCommentId?: ModelIDInput | null,
 };
 
 export type Todo = {
@@ -188,17 +229,44 @@ export type Todo = {
   id: string,
   name: string,
   description?: string | null,
+  comment?: Comment | null,
   createdAt: string,
   updatedAt: string,
+  todoCommentId?: string | null,
 };
 
 export type UpdateTodoInput = {
   id: string,
   name?: string | null,
   description?: string | null,
+  todoCommentId?: string | null,
 };
 
 export type DeleteTodoInput = {
+  id: string,
+};
+
+export type CreatePostTagsInput = {
+  id?: string | null,
+  postId: string,
+  tagId: string,
+};
+
+export type ModelPostTagsConditionInput = {
+  postId?: ModelIDInput | null,
+  tagId?: ModelIDInput | null,
+  and?: Array< ModelPostTagsConditionInput | null > | null,
+  or?: Array< ModelPostTagsConditionInput | null > | null,
+  not?: ModelPostTagsConditionInput | null,
+};
+
+export type UpdatePostTagsInput = {
+  id: string,
+  postId?: string | null,
+  tagId?: string | null,
+};
+
+export type DeletePostTagsInput = {
   id: string,
 };
 
@@ -219,10 +287,25 @@ export type ModelBlogConnection = {
 export type ModelPostFilterInput = {
   id?: ModelIDInput | null,
   title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
   not?: ModelPostFilterInput | null,
   blogPostsId?: ModelIDInput | null,
+};
+
+export type ModelTagFilterInput = {
+  id?: ModelIDInput | null,
+  label?: ModelStringInput | null,
+  and?: Array< ModelTagFilterInput | null > | null,
+  or?: Array< ModelTagFilterInput | null > | null,
+  not?: ModelTagFilterInput | null,
+};
+
+export type ModelTagConnection = {
+  __typename: "ModelTagConnection",
+  items:  Array<Tag | null >,
+  nextToken?: string | null,
 };
 
 export type ModelCommentFilterInput = {
@@ -231,7 +314,12 @@ export type ModelCommentFilterInput = {
   and?: Array< ModelCommentFilterInput | null > | null,
   or?: Array< ModelCommentFilterInput | null > | null,
   not?: ModelCommentFilterInput | null,
-  postCommentsId?: ModelIDInput | null,
+};
+
+export type ModelCommentConnection = {
+  __typename: "ModelCommentConnection",
+  items:  Array<Comment | null >,
+  nextToken?: string | null,
 };
 
 export type ModelTodoFilterInput = {
@@ -241,6 +329,7 @@ export type ModelTodoFilterInput = {
   and?: Array< ModelTodoFilterInput | null > | null,
   or?: Array< ModelTodoFilterInput | null > | null,
   not?: ModelTodoFilterInput | null,
+  todoCommentId?: ModelIDInput | null,
 };
 
 export type ModelTodoConnection = {
@@ -248,6 +337,21 @@ export type ModelTodoConnection = {
   items:  Array<Todo | null >,
   nextToken?: string | null,
 };
+
+export type ModelPostTagsFilterInput = {
+  id?: ModelIDInput | null,
+  postId?: ModelIDInput | null,
+  tagId?: ModelIDInput | null,
+  and?: Array< ModelPostTagsFilterInput | null > | null,
+  or?: Array< ModelPostTagsFilterInput | null > | null,
+  not?: ModelPostTagsFilterInput | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 
 export type ModelSubscriptionBlogFilterInput = {
   id?: ModelSubscriptionIDInput | null,
@@ -289,8 +393,16 @@ export type ModelSubscriptionStringInput = {
 export type ModelSubscriptionPostFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   title?: ModelSubscriptionStringInput | null,
+  content?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionPostFilterInput | null > | null,
   or?: Array< ModelSubscriptionPostFilterInput | null > | null,
+};
+
+export type ModelSubscriptionTagFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  label?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionTagFilterInput | null > | null,
+  or?: Array< ModelSubscriptionTagFilterInput | null > | null,
 };
 
 export type ModelSubscriptionCommentFilterInput = {
@@ -306,6 +418,14 @@ export type ModelSubscriptionTodoFilterInput = {
   description?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionTodoFilterInput | null > | null,
   or?: Array< ModelSubscriptionTodoFilterInput | null > | null,
+};
+
+export type ModelSubscriptionPostTagsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  postId?: ModelSubscriptionIDInput | null,
+  tagId?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionPostTagsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionPostTagsFilterInput | null > | null,
 };
 
 export type CreateBlogMutationVariables = {
@@ -375,15 +495,9 @@ export type CreatePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -402,15 +516,9 @@ export type UpdatePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -429,20 +537,71 @@ export type DeletePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
     blogPostsId?: string | null,
+  } | null,
+};
+
+export type CreateTagMutationVariables = {
+  input: CreateTagInput,
+  condition?: ModelTagConditionInput | null,
+};
+
+export type CreateTagMutation = {
+  createTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateTagMutationVariables = {
+  input: UpdateTagInput,
+  condition?: ModelTagConditionInput | null,
+};
+
+export type UpdateTagMutation = {
+  updateTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteTagMutationVariables = {
+  input: DeleteTagInput,
+  condition?: ModelTagConditionInput | null,
+};
+
+export type DeleteTagMutation = {
+  deleteTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
@@ -455,18 +614,9 @@ export type CreateCommentMutation = {
   createComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -479,18 +629,9 @@ export type UpdateCommentMutation = {
   updateComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -503,18 +644,9 @@ export type DeleteCommentMutation = {
   deleteComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -529,8 +661,16 @@ export type CreateTodoMutation = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
+    todoCommentId?: string | null,
   } | null,
 };
 
@@ -545,8 +685,16 @@ export type UpdateTodoMutation = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
+    todoCommentId?: string | null,
   } | null,
 };
 
@@ -561,6 +709,110 @@ export type DeleteTodoMutation = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    todoCommentId?: string | null,
+  } | null,
+};
+
+export type CreatePostTagsMutationVariables = {
+  input: CreatePostTagsInput,
+  condition?: ModelPostTagsConditionInput | null,
+};
+
+export type CreatePostTagsMutation = {
+  createPostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdatePostTagsMutationVariables = {
+  input: UpdatePostTagsInput,
+  condition?: ModelPostTagsConditionInput | null,
+};
+
+export type UpdatePostTagsMutation = {
+  updatePostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeletePostTagsMutationVariables = {
+  input: DeletePostTagsInput,
+  condition?: ModelPostTagsConditionInput | null,
+};
+
+export type DeletePostTagsMutation = {
+  deletePostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -613,15 +865,9 @@ export type GetPostQuery = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -643,9 +889,48 @@ export type ListPostsQuery = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetTagQueryVariables = {
+  id: string,
+};
+
+export type GetTagQuery = {
+  getTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListTagsQueryVariables = {
+  filter?: ModelTagFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListTagsQuery = {
+  listTags?:  {
+    __typename: "ModelTagConnection",
+    items:  Array< {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -659,18 +944,9 @@ export type GetCommentQuery = {
   getComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -689,7 +965,6 @@ export type ListCommentsQuery = {
       content: string,
       createdAt: string,
       updatedAt: string,
-      postCommentsId?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -705,8 +980,16 @@ export type GetTodoQuery = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
+    todoCommentId?: string | null,
   } | null,
 };
 
@@ -724,6 +1007,105 @@ export type ListTodosQuery = {
       id: string,
       name: string,
       description?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      todoCommentId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetPostTagsQueryVariables = {
+  id: string,
+};
+
+export type GetPostTagsQuery = {
+  getPostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListPostTagsQueryVariables = {
+  filter?: ModelPostTagsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListPostTagsQuery = {
+  listPostTags?:  {
+    __typename: "ModelPostTagsConnection",
+    items:  Array< {
+      __typename: "PostTags",
+      id: string,
+      postId: string,
+      tagId: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type PostTagsByPostIdQueryVariables = {
+  postId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelPostTagsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type PostTagsByPostIdQuery = {
+  postTagsByPostId?:  {
+    __typename: "ModelPostTagsConnection",
+    items:  Array< {
+      __typename: "PostTags",
+      id: string,
+      postId: string,
+      tagId: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type PostTagsByTagIdQueryVariables = {
+  tagId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelPostTagsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type PostTagsByTagIdQuery = {
+  postTagsByTagId?:  {
+    __typename: "ModelPostTagsConnection",
+    items:  Array< {
+      __typename: "PostTags",
+      id: string,
+      postId: string,
+      tagId: string,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -794,15 +1176,9 @@ export type OnCreatePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -820,15 +1196,9 @@ export type OnUpdatePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -846,20 +1216,68 @@ export type OnDeletePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
-    blog?:  {
-      __typename: "Blog",
-      id: string,
-      name: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    comments?:  {
-      __typename: "ModelCommentConnection",
+    content?: string | null,
+    tags?:  {
+      __typename: "ModelPostTagsConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
     blogPostsId?: string | null,
+  } | null,
+};
+
+export type OnCreateTagSubscriptionVariables = {
+  filter?: ModelSubscriptionTagFilterInput | null,
+};
+
+export type OnCreateTagSubscription = {
+  onCreateTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateTagSubscriptionVariables = {
+  filter?: ModelSubscriptionTagFilterInput | null,
+};
+
+export type OnUpdateTagSubscription = {
+  onUpdateTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteTagSubscriptionVariables = {
+  filter?: ModelSubscriptionTagFilterInput | null,
+};
+
+export type OnDeleteTagSubscription = {
+  onDeleteTag?:  {
+    __typename: "Tag",
+    id: string,
+    label: string,
+    posts?:  {
+      __typename: "ModelPostTagsConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
@@ -871,18 +1289,9 @@ export type OnCreateCommentSubscription = {
   onCreateComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -894,18 +1303,9 @@ export type OnUpdateCommentSubscription = {
   onUpdateComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -917,18 +1317,9 @@ export type OnDeleteCommentSubscription = {
   onDeleteComment?:  {
     __typename: "Comment",
     id: string,
-    post?:  {
-      __typename: "Post",
-      id: string,
-      title: string,
-      createdAt: string,
-      updatedAt: string,
-      blogPostsId?: string | null,
-    } | null,
     content: string,
     createdAt: string,
     updatedAt: string,
-    postCommentsId?: string | null,
   } | null,
 };
 
@@ -942,8 +1333,16 @@ export type OnCreateTodoSubscription = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
+    todoCommentId?: string | null,
   } | null,
 };
 
@@ -957,8 +1356,16 @@ export type OnUpdateTodoSubscription = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
+    todoCommentId?: string | null,
   } | null,
 };
 
@@ -972,6 +1379,107 @@ export type OnDeleteTodoSubscription = {
     id: string,
     name: string,
     description?: string | null,
+    comment?:  {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    todoCommentId?: string | null,
+  } | null,
+};
+
+export type OnCreatePostTagsSubscriptionVariables = {
+  filter?: ModelSubscriptionPostTagsFilterInput | null,
+};
+
+export type OnCreatePostTagsSubscription = {
+  onCreatePostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdatePostTagsSubscriptionVariables = {
+  filter?: ModelSubscriptionPostTagsFilterInput | null,
+};
+
+export type OnUpdatePostTagsSubscription = {
+  onUpdatePostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeletePostTagsSubscriptionVariables = {
+  filter?: ModelSubscriptionPostTagsFilterInput | null,
+};
+
+export type OnDeletePostTagsSubscription = {
+  onDeletePostTags?:  {
+    __typename: "PostTags",
+    id: string,
+    postId: string,
+    tagId: string,
+    post:  {
+      __typename: "Post",
+      id: string,
+      title: string,
+      content?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      blogPostsId?: string | null,
+    },
+    tag:  {
+      __typename: "Tag",
+      id: string,
+      label: string,
+      createdAt: string,
+      updatedAt: string,
+    },
     createdAt: string,
     updatedAt: string,
   } | null,

@@ -44,14 +44,8 @@ export const getPost = /* GraphQL */ `query GetPost($id: ID!) {
   getPost(id: $id) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -71,6 +65,17 @@ export const listPosts = /* GraphQL */ `query ListPosts(
     items {
       id
       title
+      content
+      tags {
+        nextToken
+        __typename
+        items{
+          tag{
+            id
+            label
+          }
+        }
+      }
       createdAt
       updatedAt
       blogPostsId
@@ -81,21 +86,40 @@ export const listPosts = /* GraphQL */ `query ListPosts(
   }
 }
 ` as GeneratedQuery<APITypes.ListPostsQueryVariables, APITypes.ListPostsQuery>;
+export const getTag = /* GraphQL */ `query GetTag($id: ID!) {
+  getTag(id: $id) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetTagQueryVariables, APITypes.GetTagQuery>;
+export const listTags = /* GraphQL */ `query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
+  listTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.ListTagsQueryVariables, APITypes.ListTagsQuery>;
 export const getComment = /* GraphQL */ `query GetComment($id: ID!) {
   getComment(id: $id) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -114,7 +138,6 @@ export const listComments = /* GraphQL */ `query ListComments(
       content
       createdAt
       updatedAt
-      postCommentsId
       __typename
     }
     nextToken
@@ -130,8 +153,16 @@ export const getTodo = /* GraphQL */ `query GetTodo($id: ID!) {
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
@@ -148,6 +179,7 @@ export const listTodos = /* GraphQL */ `query ListTodos(
       description
       createdAt
       updatedAt
+      todoCommentId
       __typename
     }
     nextToken
@@ -155,3 +187,115 @@ export const listTodos = /* GraphQL */ `query ListTodos(
   }
 }
 ` as GeneratedQuery<APITypes.ListTodosQueryVariables, APITypes.ListTodosQuery>;
+export const getPostTags = /* GraphQL */ `query GetPostTags($id: ID!) {
+  getPostTags(id: $id) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetPostTagsQueryVariables,
+  APITypes.GetPostTagsQuery
+>;
+export const listPostTags = /* GraphQL */ `query ListPostTags(
+  $filter: ModelPostTagsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPostTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      postId
+      tagId
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListPostTagsQueryVariables,
+  APITypes.ListPostTagsQuery
+>;
+export const postTagsByPostId = /* GraphQL */ `query PostTagsByPostId(
+  $postId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelPostTagsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  postTagsByPostId(
+    postId: $postId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      postId
+      tagId
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.PostTagsByPostIdQueryVariables,
+  APITypes.PostTagsByPostIdQuery
+>;
+export const postTagsByTagId = /* GraphQL */ `query PostTagsByTagId(
+  $tagId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelPostTagsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  postTagsByTagId(
+    tagId: $tagId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      postId
+      tagId
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.PostTagsByTagIdQueryVariables,
+  APITypes.PostTagsByTagIdQuery
+>;

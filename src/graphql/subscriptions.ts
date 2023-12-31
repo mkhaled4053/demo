@@ -63,14 +63,8 @@ export const onCreatePost = /* GraphQL */ `subscription OnCreatePost($filter: Mo
   onCreatePost(filter: $filter) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -88,14 +82,8 @@ export const onUpdatePost = /* GraphQL */ `subscription OnUpdatePost($filter: Mo
   onUpdatePost(filter: $filter) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -113,14 +101,8 @@ export const onDeletePost = /* GraphQL */ `subscription OnDeletePost($filter: Mo
   onDeletePost(filter: $filter) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -134,21 +116,63 @@ export const onDeletePost = /* GraphQL */ `subscription OnDeletePost($filter: Mo
   APITypes.OnDeletePostSubscriptionVariables,
   APITypes.OnDeletePostSubscription
 >;
+export const onCreateTag = /* GraphQL */ `subscription OnCreateTag($filter: ModelSubscriptionTagFilterInput) {
+  onCreateTag(filter: $filter) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateTagSubscriptionVariables,
+  APITypes.OnCreateTagSubscription
+>;
+export const onUpdateTag = /* GraphQL */ `subscription OnUpdateTag($filter: ModelSubscriptionTagFilterInput) {
+  onUpdateTag(filter: $filter) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateTagSubscriptionVariables,
+  APITypes.OnUpdateTagSubscription
+>;
+export const onDeleteTag = /* GraphQL */ `subscription OnDeleteTag($filter: ModelSubscriptionTagFilterInput) {
+  onDeleteTag(filter: $filter) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteTagSubscriptionVariables,
+  APITypes.OnDeleteTagSubscription
+>;
 export const onCreateComment = /* GraphQL */ `subscription OnCreateComment($filter: ModelSubscriptionCommentFilterInput) {
   onCreateComment(filter: $filter) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -159,18 +183,9 @@ export const onCreateComment = /* GraphQL */ `subscription OnCreateComment($filt
 export const onUpdateComment = /* GraphQL */ `subscription OnUpdateComment($filter: ModelSubscriptionCommentFilterInput) {
   onUpdateComment(filter: $filter) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -181,18 +196,9 @@ export const onUpdateComment = /* GraphQL */ `subscription OnUpdateComment($filt
 export const onDeleteComment = /* GraphQL */ `subscription OnDeleteComment($filter: ModelSubscriptionCommentFilterInput) {
   onDeleteComment(filter: $filter) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -205,8 +211,16 @@ export const onCreateTodo = /* GraphQL */ `subscription OnCreateTodo($filter: Mo
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
@@ -219,8 +233,16 @@ export const onUpdateTodo = /* GraphQL */ `subscription OnUpdateTodo($filter: Mo
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
@@ -233,12 +255,110 @@ export const onDeleteTodo = /* GraphQL */ `subscription OnDeleteTodo($filter: Mo
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
 ` as GeneratedSubscription<
   APITypes.OnDeleteTodoSubscriptionVariables,
   APITypes.OnDeleteTodoSubscription
+>;
+export const onCreatePostTags = /* GraphQL */ `subscription OnCreatePostTags($filter: ModelSubscriptionPostTagsFilterInput) {
+  onCreatePostTags(filter: $filter) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreatePostTagsSubscriptionVariables,
+  APITypes.OnCreatePostTagsSubscription
+>;
+export const onUpdatePostTags = /* GraphQL */ `subscription OnUpdatePostTags($filter: ModelSubscriptionPostTagsFilterInput) {
+  onUpdatePostTags(filter: $filter) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdatePostTagsSubscriptionVariables,
+  APITypes.OnUpdatePostTagsSubscription
+>;
+export const onDeletePostTags = /* GraphQL */ `subscription OnDeletePostTags($filter: ModelSubscriptionPostTagsFilterInput) {
+  onDeletePostTags(filter: $filter) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeletePostTagsSubscriptionVariables,
+  APITypes.OnDeletePostTagsSubscription
 >;

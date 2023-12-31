@@ -75,14 +75,8 @@ export const createPost = /* GraphQL */ `mutation CreatePost(
   createPost(input: $input, condition: $condition) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -103,14 +97,8 @@ export const updatePost = /* GraphQL */ `mutation UpdatePost(
   updatePost(input: $input, condition: $condition) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -131,14 +119,8 @@ export const deletePost = /* GraphQL */ `mutation DeletePost(
   deletePost(input: $input, condition: $condition) {
     id
     title
-    blog {
-      id
-      name
-      createdAt
-      updatedAt
-      __typename
-    }
-    comments {
+    content
+    tags {
       nextToken
       __typename
     }
@@ -152,24 +134,75 @@ export const deletePost = /* GraphQL */ `mutation DeletePost(
   APITypes.DeletePostMutationVariables,
   APITypes.DeletePostMutation
 >;
+export const createTag = /* GraphQL */ `mutation CreateTag(
+  $input: CreateTagInput!
+  $condition: ModelTagConditionInput
+) {
+  createTag(input: $input, condition: $condition) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateTagMutationVariables,
+  APITypes.CreateTagMutation
+>;
+export const updateTag = /* GraphQL */ `mutation UpdateTag(
+  $input: UpdateTagInput!
+  $condition: ModelTagConditionInput
+) {
+  updateTag(input: $input, condition: $condition) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateTagMutationVariables,
+  APITypes.UpdateTagMutation
+>;
+export const deleteTag = /* GraphQL */ `mutation DeleteTag(
+  $input: DeleteTagInput!
+  $condition: ModelTagConditionInput
+) {
+  deleteTag(input: $input, condition: $condition) {
+    id
+    label
+    posts {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteTagMutationVariables,
+  APITypes.DeleteTagMutation
+>;
 export const createComment = /* GraphQL */ `mutation CreateComment(
   $input: CreateCommentInput!
   $condition: ModelCommentConditionInput
 ) {
   createComment(input: $input, condition: $condition) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -183,18 +216,9 @@ export const updateComment = /* GraphQL */ `mutation UpdateComment(
 ) {
   updateComment(input: $input, condition: $condition) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -208,18 +232,9 @@ export const deleteComment = /* GraphQL */ `mutation DeleteComment(
 ) {
   deleteComment(input: $input, condition: $condition) {
     id
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      blogPostsId
-      __typename
-    }
     content
     createdAt
     updatedAt
-    postCommentsId
     __typename
   }
 }
@@ -235,8 +250,16 @@ export const createTodo = /* GraphQL */ `mutation CreateTodo(
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
@@ -252,8 +275,16 @@ export const updateTodo = /* GraphQL */ `mutation UpdateTodo(
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
@@ -269,12 +300,119 @@ export const deleteTodo = /* GraphQL */ `mutation DeleteTodo(
     id
     name
     description
+    comment {
+      id
+      content
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    todoCommentId
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteTodoMutationVariables,
   APITypes.DeleteTodoMutation
+>;
+export const createPostTags = /* GraphQL */ `mutation CreatePostTags(
+  $input: CreatePostTagsInput!
+  $condition: ModelPostTagsConditionInput
+) {
+  createPostTags(input: $input, condition: $condition) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreatePostTagsMutationVariables,
+  APITypes.CreatePostTagsMutation
+>;
+export const updatePostTags = /* GraphQL */ `mutation UpdatePostTags(
+  $input: UpdatePostTagsInput!
+  $condition: ModelPostTagsConditionInput
+) {
+  updatePostTags(input: $input, condition: $condition) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdatePostTagsMutationVariables,
+  APITypes.UpdatePostTagsMutation
+>;
+export const deletePostTags = /* GraphQL */ `mutation DeletePostTags(
+  $input: DeletePostTagsInput!
+  $condition: ModelPostTagsConditionInput
+) {
+  deletePostTags(input: $input, condition: $condition) {
+    id
+    postId
+    tagId
+    post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      blogPostsId
+      __typename
+    }
+    tag {
+      id
+      label
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeletePostTagsMutationVariables,
+  APITypes.DeletePostTagsMutation
 >;

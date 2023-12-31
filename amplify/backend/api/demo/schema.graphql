@@ -11,13 +11,18 @@ type Blog @model {
 type Post @model {
   id: ID!
   title: String!
-  blog: Blog @belongsTo
-  comments: [Comment] @hasMany
+  content: String
+  tags: [Tag] @manyToMany(relationName: "PostTags")
+}
+
+type Tag @model {
+  id: ID!
+  label: String!
+  posts: [Post] @manyToMany(relationName: "PostTags")
 }
 
 type Comment @model {
   id: ID!
-  post: Post @belongsTo
   content: String!
 }
 
@@ -25,4 +30,5 @@ type Todo @model {
   id: ID!
   name: String!
   description: String
+  comment: Comment @hasOne
 }
