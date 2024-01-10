@@ -66,16 +66,6 @@ export const listPosts = /* GraphQL */ `query ListPosts(
       id
       title
       content
-      tags {
-        nextToken
-        __typename
-        items{
-          tag{
-            id
-            label
-          }
-        }
-      }
       createdAt
       updatedAt
       blogPostsId
