@@ -1,137 +1,158 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { generateClient } from 'aws-amplify/api';
+import { generateClient } from "aws-amplify/api";
 
-import { createPost, createPostTags, createTag, createTodo, deleteTodo } from './graphql/mutations';
-import { getPost, getTodo, listComments, listPosts, listTodos } from './graphql/queries';
-import { type CreateTodoInput, type Todo } from './API';
+import {
+  createComment,
+  createPost,
+  createPostTags,
+  createTag,
+  createTodo,
+  deleteComment,
+  deleteTodo,
+} from "./graphql/mutations";
+import {
+  getPost,
+  getTodo,
+  listComments,
+  listPosts,
+  listTodos,
+} from "./graphql/queries";
+import { type CreateTodoInput, type Todo } from "./API";
 
-const initialState: CreateTodoInput = { name: '', description: '' };
+const initialState: CreateTodoInput = { name: "", description: "" };
 const client = generateClient();
 
 const App = () => {
-  const [formState, setFormState] = useState<CreateTodoInput>(initialState);
-  const [todos, setTodos] = useState<Todo[] | CreateTodoInput[]>([]);
+  let [data, setData] = useState({});
 
-  useEffect(() => {
-    fetchTodos();
-    // fetchPosts()
-  }, []);
+  function onClick() {
+    let test = Array.from({ length: 500000 }, (_, k) => ({
+      gender: k % 2 === 0 ? "male" : "female",
+      count: k,
+    }));
+    const start = performance.now();
 
-  async function fetchTodos() {
-    try {
-      const todoData = await client.graphql({
-        query: listTodos,
-      });
-      const todos = todoData.data.listTodos.items;
-      console.log(todos);
-      setTodos(todos);
-    } catch (err) {
-      console.log(err);
-    }
+    let { genderRatio, count } = test.reduce(
+      (prev: any, curr) => {
+        if (!prev.genderRatio[curr.gender]) {
+          prev.genderRatio[curr.gender] = 1;
+        } else {
+          prev.genderRatio[curr.gender]++;
+        }
+        prev.count += curr.count;
+        return prev;
+      },
+      { genderRatio: {}, count: 0 }
+    );
+
+    console.log(genderRatio);
+    console.log(count);
+
+    const end = performance.now();
+    console.log(`Execution time: ${end - start} ms`);
+    // console.log(test);
+  }
+  async function createComments() {
+    const start = performance.now();
+    await client.graphql({
+      query: createComment,
+      variables: { input: { content: "dd" } },
+    });
+
+    console.log("dd");
+
+    return;
+
+    let test = Array.from({ length: 1000 });
+    test.map((t, index) =>
+      client.graphql({
+        query: createComment,
+        variables: { input: { content: index % 2 === 0 ? "male" : "female" } },
+      })
+    );
+    await Promise.all(test);
+
+    const end = performance.now();
+    console.log(`Execution time: ${end - start} ms`);
+    // console.log(test);
   }
 
-//   async function fetchPosts() {
-//     try {
-
-
-// // create tag
-// const tagResult = await client.graphql({
-//   query: createTag,
-//   variables: {
-//     input: {
-//       label: 'new Tag'
-//     }
-//   }
-// });
-// const tag = tagResult.data.createTag;
-
-// // connect post and tag
-// let con = await client.graphql({
-//   query: createPostTags,
-//   variables: {
-//     input: {
-//       postId: "d19b3000-9008-4b2e-8c4e-a0f01256bc41",
-//       tagId: tag.id,
-//     }
-//   }
-// });
-
-// console.log(con);
-
-
-// const listPostsResult = await client.graphql({ query: listPosts });
-// const posts = listPostsResult.data.listPosts.items;
-
-// console.log(posts);
-// //@ts-ignore
-// console.log(posts[0].tags);
-
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-
-  async function addTodo() {
-    try {
-      if (!formState.name || !formState.description) return;
-      const todo = { ...formState };
-      setTodos([...todos, todo]);
-      setFormState(initialState);
+  async function list(nextToken?: string | null, limit?: number) {
+    let listing = (
       await client.graphql({
-        query: createTodo,
-        variables: {
-          input: todo,
-        },
-      });
-    } catch (err) {
-      console.log('error creating todo:', err);
-    }
+        query: listComments,
+
+        variables: { limit: limit || 100000, nextToken },
+      })
+    ).data.listComments;
+
+    return listing;
   }
 
-  async function removeTodo(id:string) {
-    try {
-      setTodos(todos.filter(todo=>todo.id !==id));
-      await client.graphql({
-        query: deleteTodo,
-        variables: {
-          input: {id},
-        },
-      });
-    } catch (err) {
-      console.log('error creating todo:', err);
-    }
+  async function getComments() {
+    const start = performance.now();
+    let listing;
+    let comments: any[] = [];
+    do {
+      listing = await list(listing?.nextToken);
+      comments = comments.concat(listing.items);
+    } while (listing.nextToken);
+    console.log(comments);
+
+    const end = performance.now();
+    console.log(`fetching time: ${end - start} ms`);
+
+    const st = performance.now();
+
+    let { genderRatio } = comments.reduce(
+      (prev: any, curr) => {
+        if (!prev.genderRatio[curr.content]) {
+          prev.genderRatio[curr.content] = 1;
+        } else {
+          prev.genderRatio[curr.content]++;
+        }
+        prev.count += curr.count;
+        return prev;
+      },
+      { genderRatio: {} }
+    );
+    console.log(genderRatio);
+
+    const en = performance.now();
+    console.log(`loop time: ${en - st} ms`);
+  }
+
+  async function removeComments() {
+    const start = performance.now();
+    let listing;
+    let comments: any[] = [];
+    listing = await list(null, 10000);
+    comments = comments.concat(listing.items);
+    console.log(comments);
+
+    const end = performance.now();
+    console.log(`fetching time: ${end - start} ms`);
+
+    const st = performance.now();
+
+    let deletePromises = comments.map((comment) =>
+      client.graphql({
+        query: deleteComment,
+        variables: { input: { id: comment.id } },
+      })
+    );
+    await Promise.all(deletePromises);
+    const en = performance.now();
+    console.log(`delete time: ${en - st} ms`);
   }
 
   return (
     <div style={styles.container}>
-      <h2>Amplify Todos</h2>
-      <input
-        onChange={(event) =>
-          setFormState({ ...formState, name: event.target.value })
-        }
-        style={styles.input}
-        value={formState.name}
-        placeholder="Name"
-      />
-      <input
-        onChange={(event) =>
-          setFormState({ ...formState, description: event.target.value })
-        }
-        style={styles.input}
-        value={formState.description as string}
-        placeholder="Description"
-      />
-      <button style={styles.button} onClick={addTodo}>
-        Create Todo
-      </button>
-      {todos.map((todo, index) => (
-        <div key={todo.id ? todo.id : index} style={styles.todo}>
-          <p style={styles.todoName}>{todo.name}</p>
-          <p style={styles.todoDescription}>{todo.description}</p>
-          <p onClick={()=>removeTodo(todo.id!)} style={styles.deleteTodo}>delete</p>
-        </div>
-      ))}
+      <button onClick={onClick}>test</button>
+      <button onClick={createComments}>create commets</button>
+      <button onClick={getComments}>list comments</button>
+      <button onClick={removeComments}>delete comments</button>
     </div>
   );
 };
@@ -155,7 +176,7 @@ const styles = {
   },
   todoName: { fontSize: 20, fontWeight: "bold" },
   todoDescription: { marginBottom: 0 },
-  deleteTodo: { color: 'red' },
+  deleteTodo: { color: "red" },
   button: {
     backgroundColor: "black",
     color: "white",
