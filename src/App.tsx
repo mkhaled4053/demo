@@ -15,7 +15,7 @@ const App = () => {
 
   useEffect(() => {
     fetchTodos();
-    fetchPosts()
+    // fetchPosts()
   }, []);
 
   async function fetchTodos() {
@@ -27,50 +27,50 @@ const App = () => {
       console.log(todos);
       setTodos(todos);
     } catch (err) {
-      console.log('error fetching todos');
-    }
-  }
-
-  async function fetchPosts() {
-    try {
-
-
-// create tag
-const tagResult = await client.graphql({
-  query: createTag,
-  variables: {
-    input: {
-      label: 'new Tag'
-    }
-  }
-});
-const tag = tagResult.data.createTag;
-
-// connect post and tag
-let con = await client.graphql({
-  query: createPostTags,
-  variables: {
-    input: {
-      postId: "d19b3000-9008-4b2e-8c4e-a0f01256bc41",
-      tagId: tag.id,
-    }
-  }
-});
-
-console.log(con);
-
-
-const listPostsResult = await client.graphql({ query: listPosts });
-const posts = listPostsResult.data.listPosts.items;
-
-console.log(posts);
-//@ts-ignore
-console.log(posts[0].tags);
-
-    } catch (err) {
       console.log(err);
     }
   }
+
+//   async function fetchPosts() {
+//     try {
+
+
+// // create tag
+// const tagResult = await client.graphql({
+//   query: createTag,
+//   variables: {
+//     input: {
+//       label: 'new Tag'
+//     }
+//   }
+// });
+// const tag = tagResult.data.createTag;
+
+// // connect post and tag
+// let con = await client.graphql({
+//   query: createPostTags,
+//   variables: {
+//     input: {
+//       postId: "d19b3000-9008-4b2e-8c4e-a0f01256bc41",
+//       tagId: tag.id,
+//     }
+//   }
+// });
+
+// console.log(con);
+
+
+// const listPostsResult = await client.graphql({ query: listPosts });
+// const posts = listPostsResult.data.listPosts.items;
+
+// console.log(posts);
+// //@ts-ignore
+// console.log(posts[0].tags);
+
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
 
   async function addTodo() {
     try {
