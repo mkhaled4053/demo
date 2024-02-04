@@ -108,6 +108,7 @@ export const getComment = /* GraphQL */ `query GetComment($id: ID!) {
   getComment(id: $id) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -126,6 +127,7 @@ export const listComments = /* GraphQL */ `query ListComments(
     items {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
@@ -146,6 +148,7 @@ export const getTodo = /* GraphQL */ `query GetTodo($id: ID!) {
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
@@ -228,6 +231,36 @@ export const listPostTags = /* GraphQL */ `query ListPostTags(
 ` as GeneratedQuery<
   APITypes.ListPostTagsQueryVariables,
   APITypes.ListPostTagsQuery
+>;
+export const commentByDeleted = /* GraphQL */ `query CommentByDeleted(
+  $deleted: String!
+  $sortDirection: ModelSortDirection
+  $filter: ModelCommentFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  commentByDeleted(
+    deleted: $deleted
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      content
+      deleted
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.CommentByDeletedQueryVariables,
+  APITypes.CommentByDeletedQuery
 >;
 export const postTagsByPostId = /* GraphQL */ `query PostTagsByPostId(
   $postId: ID!

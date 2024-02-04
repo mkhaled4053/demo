@@ -171,6 +171,7 @@ export const onCreateComment = /* GraphQL */ `subscription OnCreateComment($filt
   onCreateComment(filter: $filter) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -184,6 +185,7 @@ export const onUpdateComment = /* GraphQL */ `subscription OnUpdateComment($filt
   onUpdateComment(filter: $filter) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -197,6 +199,7 @@ export const onDeleteComment = /* GraphQL */ `subscription OnDeleteComment($filt
   onDeleteComment(filter: $filter) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -214,6 +217,7 @@ export const onCreateTodo = /* GraphQL */ `subscription OnCreateTodo($filter: Mo
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
@@ -236,6 +240,7 @@ export const onUpdateTodo = /* GraphQL */ `subscription OnUpdateTodo($filter: Mo
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
@@ -258,6 +263,7 @@ export const onDeleteTodo = /* GraphQL */ `subscription OnDeleteTodo($filter: Mo
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename

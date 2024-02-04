@@ -123,6 +123,39 @@ const App = () => {
     console.log(`loop time: ${en - st} ms`);
   }
 
+  async function getCommentsByDeleted() {
+    const start = performance.now();
+    let listing;
+    let comments: any[] = [];
+    do {
+      listing = await list(listing?.nextToken);
+      comments = comments.concat(listing.items);
+    } while (listing.nextToken);
+    console.log(comments);
+
+    const end = performance.now();
+    console.log(`fetching time: ${end - start} ms`);
+
+    const st = performance.now();
+
+    let { genderRatio } = comments.reduce(
+      (prev: any, curr) => {
+        if (!prev.genderRatio[curr.content]) {
+          prev.genderRatio[curr.content] = 1;
+        } else {
+          prev.genderRatio[curr.content]++;
+        }
+        prev.count += curr.count;
+        return prev;
+      },
+      { genderRatio: {} }
+    );
+    console.log(genderRatio);
+
+    const en = performance.now();
+    console.log(`loop time: ${en - st} ms`);
+  }
+
   async function removeComments() {
     const start = performance.now();
     let listing;
@@ -152,6 +185,7 @@ const App = () => {
       <button onClick={onClick}>test</button>
       <button onClick={createComments}>create commets</button>
       <button onClick={getComments}>list comments</button>
+      <button onClick={getCommentsByDeleted}>list comments by deleted</button>
       <button onClick={removeComments}>delete comments</button>
     </div>
   );

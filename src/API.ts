@@ -182,10 +182,12 @@ export type DeleteTagInput = {
 export type CreateCommentInput = {
   id?: string | null,
   content: string,
+  deleted?: string | null,
 };
 
 export type ModelCommentConditionInput = {
   content?: ModelStringInput | null,
+  deleted?: ModelStringInput | null,
   and?: Array< ModelCommentConditionInput | null > | null,
   or?: Array< ModelCommentConditionInput | null > | null,
   not?: ModelCommentConditionInput | null,
@@ -195,6 +197,7 @@ export type Comment = {
   __typename: "Comment",
   id: string,
   content: string,
+  deleted?: string | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -202,6 +205,7 @@ export type Comment = {
 export type UpdateCommentInput = {
   id: string,
   content?: string | null,
+  deleted?: string | null,
 };
 
 export type DeleteCommentInput = {
@@ -311,6 +315,7 @@ export type ModelTagConnection = {
 export type ModelCommentFilterInput = {
   id?: ModelIDInput | null,
   content?: ModelStringInput | null,
+  deleted?: ModelStringInput | null,
   and?: Array< ModelCommentFilterInput | null > | null,
   or?: Array< ModelCommentFilterInput | null > | null,
   not?: ModelCommentFilterInput | null,
@@ -408,6 +413,7 @@ export type ModelSubscriptionTagFilterInput = {
 export type ModelSubscriptionCommentFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   content?: ModelSubscriptionStringInput | null,
+  deleted?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionCommentFilterInput | null > | null,
   or?: Array< ModelSubscriptionCommentFilterInput | null > | null,
 };
@@ -615,6 +621,7 @@ export type CreateCommentMutation = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -630,6 +637,7 @@ export type UpdateCommentMutation = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -645,6 +653,7 @@ export type DeleteCommentMutation = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -665,6 +674,7 @@ export type CreateTodoMutation = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,
@@ -689,6 +699,7 @@ export type UpdateTodoMutation = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,
@@ -713,6 +724,7 @@ export type DeleteTodoMutation = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,
@@ -945,6 +957,7 @@ export type GetCommentQuery = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -963,6 +976,7 @@ export type ListCommentsQuery = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -984,6 +998,7 @@ export type GetTodoQuery = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,
@@ -1060,6 +1075,29 @@ export type ListPostTagsQuery = {
       id: string,
       postId: string,
       tagId: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type CommentByDeletedQueryVariables = {
+  deleted: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelCommentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type CommentByDeletedQuery = {
+  commentByDeleted?:  {
+    __typename: "ModelCommentConnection",
+    items:  Array< {
+      __typename: "Comment",
+      id: string,
+      content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1290,6 +1328,7 @@ export type OnCreateCommentSubscription = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1304,6 +1343,7 @@ export type OnUpdateCommentSubscription = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1318,6 +1358,7 @@ export type OnDeleteCommentSubscription = {
     __typename: "Comment",
     id: string,
     content: string,
+    deleted?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1337,6 +1378,7 @@ export type OnCreateTodoSubscription = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,
@@ -1360,6 +1402,7 @@ export type OnUpdateTodoSubscription = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,
@@ -1383,6 +1426,7 @@ export type OnDeleteTodoSubscription = {
       __typename: "Comment",
       id: string,
       content: string,
+      deleted?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null,

@@ -201,6 +201,7 @@ export const createComment = /* GraphQL */ `mutation CreateComment(
   createComment(input: $input, condition: $condition) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -217,6 +218,7 @@ export const updateComment = /* GraphQL */ `mutation UpdateComment(
   updateComment(input: $input, condition: $condition) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -233,6 +235,7 @@ export const deleteComment = /* GraphQL */ `mutation DeleteComment(
   deleteComment(input: $input, condition: $condition) {
     id
     content
+    deleted
     createdAt
     updatedAt
     __typename
@@ -253,6 +256,7 @@ export const createTodo = /* GraphQL */ `mutation CreateTodo(
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
@@ -278,6 +282,7 @@ export const updateTodo = /* GraphQL */ `mutation UpdateTodo(
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
@@ -303,6 +308,7 @@ export const deleteTodo = /* GraphQL */ `mutation DeleteTodo(
     comment {
       id
       content
+      deleted
       createdAt
       updatedAt
       __typename
