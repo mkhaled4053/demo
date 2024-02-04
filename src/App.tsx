@@ -12,6 +12,7 @@ import {
   deleteTodo,
 } from "./graphql/mutations";
 import {
+  commentByDeleted,
   getPost,
   getTodo,
   listComments,
@@ -53,18 +54,19 @@ const App = () => {
     console.log(`Execution time: ${end - start} ms`);
     // console.log(test);
   }
-  async function createComments() {
-    const start = performance.now();
+  async function createOneComment() {
     await client.graphql({
       query: createComment,
-      variables: { input: { content: "dd" } },
+      variables: { input: { content: "male" } },
     });
 
     console.log("dd");
+  }
 
-    return;
+  async function createComments() {
+    const start = performance.now();
 
-    let test = Array.from({ length: 1000 });
+    let test = Array.from({ length: 7000 });
     test.map((t, index) =>
       client.graphql({
         query: createComment,
@@ -86,6 +88,18 @@ const App = () => {
         variables: { limit: limit || 100000, nextToken },
       })
     ).data.listComments;
+
+    return listing;
+  }
+
+  async function listByDeleted(nextToken?: string | null, limit?: number) {
+    let listing = (
+      await client.graphql({
+        query: commentByDeleted,
+
+        variables: { limit: limit || 100000, nextToken, deleted: "0" },
+      })
+    ).data.commentByDeleted;
 
     return listing;
   }
@@ -128,39 +142,30 @@ const App = () => {
     let listing;
     let comments: any[] = [];
     do {
-      listing = await list(listing?.nextToken);
+      listing = await listByDeleted(listing?.nextToken);
       comments = comments.concat(listing.items);
     } while (listing.nextToken);
     console.log(comments);
+    // listing = (
+    //   await client.graphql({
+    //     query: commentByDeleted,
+
+    //     variables: { deleted: "0", limit: 10000 },
+    //   })
+    // ).data.commentByDeleted;
+
+    // comments = comments.concat(listing.items);
+    // console.log(comments);
 
     const end = performance.now();
     console.log(`fetching time: ${end - start} ms`);
-
-    const st = performance.now();
-
-    let { genderRatio } = comments.reduce(
-      (prev: any, curr) => {
-        if (!prev.genderRatio[curr.content]) {
-          prev.genderRatio[curr.content] = 1;
-        } else {
-          prev.genderRatio[curr.content]++;
-        }
-        prev.count += curr.count;
-        return prev;
-      },
-      { genderRatio: {} }
-    );
-    console.log(genderRatio);
-
-    const en = performance.now();
-    console.log(`loop time: ${en - st} ms`);
   }
 
   async function removeComments() {
     const start = performance.now();
     let listing;
     let comments: any[] = [];
-    listing = await list(null, 10000);
+    listing = await list(null, 7000);
     comments = comments.concat(listing.items);
     console.log(comments);
 
@@ -180,13 +185,26 @@ const App = () => {
     console.log(`delete time: ${en - st} ms`);
   }
 
+  async function fetchByLambda() {
+    const start = performance.now();
+
+    let res = await fetch(
+      "https://7iozmlcwqgl5ksqs7ybfayjfem0tktdl.lambda-url.us-east-2.on.aws/"
+    ).then((res) => res.json());
+    console.log(res.data.listComments.items);
+    const end = performance.now();
+    console.log(`fetching time: ${end - start} ms`);
+  }
+
   return (
     <div style={styles.container}>
       <button onClick={onClick}>test</button>
+      <button onClick={createOneComment}>create one commet</button>
       <button onClick={createComments}>create commets</button>
       <button onClick={getComments}>list comments</button>
       <button onClick={getCommentsByDeleted}>list comments by deleted</button>
       <button onClick={removeComments}>delete comments</button>
+      <button onClick={fetchByLambda}>fetch by lambda</button>
     </div>
   );
 };
