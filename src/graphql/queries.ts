@@ -90,7 +90,8 @@ export const getTag = /* GraphQL */ `query GetTag($id: ID!) {
   }
 }
 ` as GeneratedQuery<APITypes.GetTagQueryVariables, APITypes.GetTagQuery>;
-export const listTags = /* GraphQL */ `query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
+export const listTags =
+  /* GraphQL */ `query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
   listTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
@@ -125,15 +126,9 @@ export const listComments = /* GraphQL */ `query ListComments(
 ) {
   listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
-      id
       content
-      deleted
-      createdAt
-      updatedAt
-      __typename
     }
     nextToken
-    __typename
   }
 }
 ` as GeneratedQuery<
@@ -247,15 +242,9 @@ export const commentByDeleted = /* GraphQL */ `query CommentByDeleted(
     nextToken: $nextToken
   ) {
     items {
-      id
       content
-      deleted
-      createdAt
-      updatedAt
-      __typename
     }
     nextToken
-    __typename
   }
 }
 ` as GeneratedQuery<

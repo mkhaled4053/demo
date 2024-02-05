@@ -19,27 +19,52 @@ exports.handler = async (event) => {
   try {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
-    // async function list() {
-    //     let listing = (
-    //       await client.graphql({
-    //         query: listComments,
+    async function list(nextToken, limit) {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": GRAPHQL_API_KEY,
+        },
+        body: JSON.stringify({
+          query: listComments,
+          variables: { limit: limit || 100000, nextToken },
+        }),
+      };
+      const listing = await fetch(GRAPHQL_ENDPOINT, options).then((res) =>
+        res.json()
+      );
+      return listing.data.listComments;
+    }
 
-    //         variables: { limit: limit || 100000, nextToken },
-    //       })
-    //     ).data.listComments;
+    const start = performance.now();
+    let listing;
+    let comments = [];
+    do {
+      listing = await list(listing?.nextToken);
+      comments = comments.concat(listing.items);
+    } while (listing.nextToken);
 
-    //     return listing;
-    //   }
+    const end = performance.now();
+    console.log(`fetching time: ${end - start} ms`);
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": GRAPHQL_API_KEY,
+    const st = performance.now();
+
+    let { genderRatio } = comments.reduce(
+      (prev, curr) => {
+        if (!prev.genderRatio[curr.content]) {
+          prev.genderRatio[curr.content] = 1;
+        } else {
+          prev.genderRatio[curr.content]++;
+        }
+        prev.count += curr.count;
+        return prev;
       },
-      body: JSON.stringify({ query: listComments, variables: {} }),
-    };
-    const response = await fetch(GRAPHQL_ENDPOINT, options).then(res => res.json());
+      { genderRatio: {} }
+    );
+
+    const en = performance.now();
+    console.log(`loop time: ${en - st} ms`);
 
     return {
       statusCode: 200,
@@ -48,7 +73,12 @@ exports.handler = async (event) => {
       //      "Access-Control-Allow-Origin": "*",
       //      "Access-Control-Allow-Headers": "*"
       //  },
-      body: JSON.stringify(response),
+      body: JSON.stringify({
+        comments: comments.length,
+        genderRatio,
+        fetchTime: end - start,
+        loopTime: en - st,
+      }),
     };
   } catch (error) {
     console.log(error);

@@ -117,24 +117,24 @@ const App = () => {
     const end = performance.now();
     console.log(`fetching time: ${end - start} ms`);
 
-    const st = performance.now();
+    // const st = performance.now();
 
-    let { genderRatio } = comments.reduce(
-      (prev: any, curr) => {
-        if (!prev.genderRatio[curr.content]) {
-          prev.genderRatio[curr.content] = 1;
-        } else {
-          prev.genderRatio[curr.content]++;
-        }
-        prev.count += curr.count;
-        return prev;
-      },
-      { genderRatio: {} }
-    );
-    console.log(genderRatio);
+    // let { genderRatio } = comments.reduce(
+    //   (prev: any, curr) => {
+    //     if (!prev.genderRatio[curr.content]) {
+    //       prev.genderRatio[curr.content] = 1;
+    //     } else {
+    //       prev.genderRatio[curr.content]++;
+    //     }
+    //     prev.count += curr.count;
+    //     return prev;
+    //   },
+    //   { genderRatio: {} }
+    // );
+    // console.log(genderRatio);
 
-    const en = performance.now();
-    console.log(`loop time: ${en - st} ms`);
+    // const en = performance.now();
+    // console.log(`loop time: ${en - st} ms`);
   }
 
   async function getCommentsByDeleted() {
@@ -158,7 +158,7 @@ const App = () => {
     // console.log(comments);
 
     const end = performance.now();
-    console.log(`fetching time: ${end - start} ms`);
+    console.log(`index time: ${end - start} ms`);
   }
 
   async function removeComments() {
@@ -188,12 +188,12 @@ const App = () => {
   async function fetchByLambda() {
     const start = performance.now();
 
-    let res = await fetch(
+    let response = await fetch(
       "https://7iozmlcwqgl5ksqs7ybfayjfem0tktdl.lambda-url.us-east-2.on.aws/"
     ).then((res) => res.json());
-    console.log(res.data.listComments.items);
+    console.log(response);
     const end = performance.now();
-    console.log(`fetching time: ${end - start} ms`);
+    console.log(`lambda time: ${end - start} ms`);
   }
 
   return (
@@ -205,6 +205,15 @@ const App = () => {
       <button onClick={getCommentsByDeleted}>list comments by deleted</button>
       <button onClick={removeComments}>delete comments</button>
       <button onClick={fetchByLambda}>fetch by lambda</button>
+      <button
+        onClick={() => {
+          getCommentsByDeleted();
+          getComments();
+          fetchByLambda();
+        }}
+      >
+        compare
+      </button>
     </div>
   );
 };
